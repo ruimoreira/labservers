@@ -1,0 +1,8 @@
+---
+# handlers file for dns_resolver
+
+- name: start unbound
+  service:
+    name: unbound
+    state: started
+  become: true  

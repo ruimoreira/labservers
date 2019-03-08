@@ -1,0 +1,7 @@
+---
+domain: moreira.dom  
+ldap_domain: dc=moreira,dc=dom
+ldap_admin_user: admin
+ldap_users_ou: ou=Users
+ldap_groups_ou: ou=Groups
+ldap_bind_dn: cn={{ ldap_admin_user }},{{ ldap_domain }}

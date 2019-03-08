@@ -1,0 +1,33 @@
+---
+- name: enable ntpd
+  service:
+    name: ntpd
+    enabled: true
+  become: true
+  notify: start ntpd
+
+- name: enable firewalld
+  service:
+    name: firewalld
+    enabled: true
+  become: true
+  notify: start firewalld
+
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+  become: true
+
+- name: enable sshd
+  service:
+    name: sshd
+    enabled: true
+  become: true
+  # notify: start firewalld
+
+- name: start sshd
+  service:
+    name: sshd
+    state: started
+  become: true

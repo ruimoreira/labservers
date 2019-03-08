@@ -1,0 +1,5 @@
+- hosts: dns_resolvers
+  vars:
+    ansible_user: rmoreira
+  roles:
+    - dns_resolver

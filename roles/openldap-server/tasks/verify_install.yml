@@ -1,0 +1,40 @@
+---
+- name: check database path is set
+  file:
+    path: "{{ ldap_directory_location }}"
+    state: directory
+    owner: "{{ ldap_service_user }}"
+    group: "{{ ldap_service_user }}"
+  become: true
+
+- name: ensure ldap logging
+  lineinfile:
+    path: /etc/rsyslog.conf
+    line: "local4.* /var/log/ldap.log"
+    create: true
+    state: present
+  become: true
+  notify:
+    - restart rsyslogd
+
+- name: copy openssl-ldap files into place
+  copy:
+    src: "{{ item }}"
+    dest: /etc/openldap/schema
+    remote_src: true
+    mode: 0444
+    owner: root
+    group: root
+  with_items:
+    - "/usr/share/doc/openssh-ldap-7.4p1/openssh-lpk-openldap.ldif"
+    - "/usr/share/doc/openssh-ldap-7.4p1/openssh-lpk-openldap.schema"
+  become: true
+
+- name: enable logrotate for openldap
+  template:
+    src: templates/ldap-logrotate.j2
+    dest: /etc/logrotate.d/ldap
+    owner: root
+    group: root
+    mode: 0644
+  become: true

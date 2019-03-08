@@ -1,0 +1,6 @@
+---
+- name: set hostname
+  hostname:
+    name: "{{ ansible_hostname }}.{{ localdomain }}"
+  become: true
+  when: change_hostname

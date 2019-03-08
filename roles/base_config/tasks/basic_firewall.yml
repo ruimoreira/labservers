@@ -1,0 +1,14 @@
+---
+- name: firewalll rule for ntpd
+  firewalld:
+    state: disabled
+    port: 123/tcp
+  become: true
+
+- name: firewalll rule for ntpd udp
+  firewalld:
+    state: enabled
+    port: 123/udp
+    permanent: true
+    immediate: true
+  become: true

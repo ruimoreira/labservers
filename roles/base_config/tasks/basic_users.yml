@@ -1,0 +1,9 @@
+---
+- name: create ansible user
+  user:
+    name: ansible
+    comment: Ansible User
+    group: ansible
+    groups: wheel
+    shell: /bin/bash
+    generate_ssh_key: true

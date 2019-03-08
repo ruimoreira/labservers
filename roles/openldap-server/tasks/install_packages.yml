@@ -1,0 +1,12 @@
+---
+- name: install openldap-server
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items:
+    - openldap-servers
+    - openldap-clients
+    - python-ldap
+    - pyOpenSSL  # needs to be updated to 0.15 will try pip
+    - openssh-ldap

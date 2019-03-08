@@ -1,0 +1,8 @@
+---
+# tasks file for base_config
+- include_tasks: hostname.yml
+- include_tasks: basic_packages.yml
+- include_tasks: basic_configuration.yml
+- include_tasks: basic_services.yml
+- meta: flush_handlers
+- include_tasks: basic_firewall.yml

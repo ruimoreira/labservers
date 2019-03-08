@@ -1,0 +1,7 @@
+---
+- name: install unbound
+  yum:
+    name: unbound
+    state: present
+  become: true
+ 
