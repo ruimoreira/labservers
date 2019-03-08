@@ -1,0 +1,15 @@
+---
+- name: create CSR
+  openssl_csr:
+    path: /etc/openldap/cacerts/"{{ domain }}".csr
+    privatekey_path: /etc/openldap/cacerts/"{{ domain }}".pem
+    common_name: "{{ domain }}"
+  when: ( {{ use_ldap_tls }} == True )
+
+- name: generage Certificate
+  openssl_certificate:
+    path: /etc/openldap/cacerts/"{{ domain }}".crt
+    privatekey_path: /etc/openldap/cacerts/"{{ domain }}".key
+    csr_path: /etc/openldap/cacerts/"{{ domain }}".csr
+    provider: selfsigned
+  when: ( {{ use_ldap_tls }} == True )

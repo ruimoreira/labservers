@@ -1,0 +1,12 @@
+/var/log/ldap.log {
+    weekly
+    missingok
+    notifempty
+    sharedscripts
+    rotate 2
+    compress
+    delaycompress
+    postrotate
+        systemctl reload slapd || true
+    endscript
+}

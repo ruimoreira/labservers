@@ -1,0 +1,5 @@
+---
+# defaults file for openldap-server
+ldap_directory_location: /var/lib/ldap
+ldap_service_user: ldap
+use_ldap_tls: true

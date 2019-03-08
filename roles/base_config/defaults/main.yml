@@ -1,0 +1,6 @@
+---
+# defaults file for base_config
+localdomain: "moreira.dom"
+ntpnet: "192.168.1.0"
+ntpmask: "255.255.255.0"
+change_hostname: true

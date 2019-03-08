@@ -1,0 +1,16 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    vault_root_ssha_password: TESTPASSWORD
+    vault_root_password: TESTPASSWORD
+    domain: testdomain.com
+    ldap_domain: dc=testdomain,dc=com
+    ldap_admin_user: admin
+    ldap_users_ou: ou=Users
+    ldap_groups_ou: ou=Groups
+    ldap_bind_dn: cn={{ ldap_admin_user }},{{ ldap_domain }}
+
+  roles:
+    - role: openldap-server
+    - role: openldap-client

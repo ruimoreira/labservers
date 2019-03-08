@@ -1,0 +1,8 @@
+---
+- name: add firewall rule
+  firewalld:
+    port: 53/udp
+    permanent: yes
+    state: enabled
+    immediate: yes
+  become: true

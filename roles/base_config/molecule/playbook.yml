@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    change_hostname: false
+  roles:
+    - role: base_config

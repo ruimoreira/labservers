@@ -1,0 +1,6 @@
+---
+# tasks file for dns_resolver
+
+- include_tasks: install_packages.yml
+- include_tasks: configure_unbound.yml
+- include_tasks: configure_firewall.yml

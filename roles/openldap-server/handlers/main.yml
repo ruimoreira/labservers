@@ -1,0 +1,28 @@
+---
+# handlers file for openldap-server
+- name: start openldap server
+  service:
+    name: slapd
+    state: started
+  become: true
+
+- name: restart rsyslogd
+  service:
+    name: rsyslog
+    state: restarted
+  become: true
+
+- name: include schemas
+  command: ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/"{{ item }}".ldif
+  with_items:
+    - cosine
+    - nis
+    - inetorgperson
+    - openssh-lpk-openldap
+  become: true
+
+- name: start firewalld
+  service:
+    name: firewalld
+    state: restarted
+  become: true

@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/ruimoreira/Devel/homeserver/dns_resolver/molecule/default","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

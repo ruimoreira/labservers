@@ -1,0 +1,8 @@
+---
+# defaults file for dns_resolver
+domain: "moreira.dom"
+resolver: "192.168.1.109"
+localnet: "192.168.1.0/24"
+forwarder1: "1.1.1.1"
+forwarder2: "8.8.8.8"
+forwarder3: "8.8.4.4"

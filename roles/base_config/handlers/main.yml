@@ -1,0 +1,14 @@
+---
+# handlers file for base_config
+
+- name: start ntpd
+  service:
+    name: ntpd
+    state: started
+  become: true
+
+- name: start firewalld
+  service:
+    name: firewalld
+    state: started
+  become: true

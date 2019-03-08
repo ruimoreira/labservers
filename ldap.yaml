@@ -1,0 +1,8 @@
+- hosts: ldap_servers
+  vars:
+    ansible_user: rmoreira
+  roles:
+    - base_config
+    - openldap-server
+    - openldap-client
+    - dns_resolver

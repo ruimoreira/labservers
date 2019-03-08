@@ -1,0 +1,19 @@
+---
+# tasks file for ovirt-node
+- name: add ovirt repo
+  yum:
+    name: http://resources.ovirt.org/pub/yum-repo/ovirt-release42.rpm
+    state: present
+  become: true
+
+- name: install packages
+  yum:
+    name: {{ item }}
+    state: present
+  with_items:
+    - qemu-kvm
+    - libvirt
+    - virt-install
+    - bridge-utils
+    - vdsm
+  become: true

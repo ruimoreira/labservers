@@ -1,0 +1,17 @@
+---
+- name: install epel
+  yum:
+    name:
+      - epel-release
+      - bind-utils
+      - net-tools
+      - ntp
+      - firewalld
+      - openssh-server
+    state: present
+  become: true
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+  become: true

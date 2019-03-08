@@ -1,0 +1,171 @@
+---
+
+- name: place DB_CONFIG template in place
+  template:
+    src: templates/DB_CONFIG.j2
+    dest: "{{ ldap_directory_location }}/DB_CONFIG"
+    owner: "{{ ldap_service_user }}"
+    group: "{{ ldap_service_user}}"
+  become: true
+
+- name: ensure hostname is in hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ansible_eth0.ipv4.address }} {{ ansible_hostname }} {{ ansible_fqdn }}"
+    create: true
+    state: present
+  become: true
+  notify:
+    - include schemas
+
+- meta: flush_handlers
+
+- name: Configure directory suffix
+  ldap_attr:
+    dn: olcDatabase={2}hdb,cn=config
+    name: olcSuffix
+    values: "{{ ldap_domain }}"
+    state: exact
+  become: true
+
+- name: Configure ROOT DN
+  ldap_attr:
+    dn: olcDatabase={2}hdb,cn=config
+    name: olcRootDN
+    values: "cn={{ ldap_admin_user }},{{ ldap_domain }}"
+    state: exact
+  become: true
+
+- name: Configure ROOT DN Password
+  ldap_attr:
+    dn: olcDatabase={2}hdb,cn=config
+    name: olcRootPW
+    values: "{{ vault_root_ssha_password }}"
+    state: exact
+  become: true
+
+
+- name: Add required indexes
+  ldap_attr:
+    dn: olcDatabase={2}hdb,cn=config
+    name: olcDbIndex
+    values: "{{ item }}"
+  with_items:
+    - uidNumber eq
+    - gidNumber eq
+    - uid eq
+    - userPassword eq
+    - memberUid eq
+  become: true
+
+- name: change monitor olcDatabase
+  ldap_attr:
+    dn: olcDatabase={1}monitor,cn=config
+    name: olcAccess
+    values:
+      - >-
+        {0}to *
+          by dn.exact="cn={{ ldap_admin_user }},{{ ldap_domain }}" read
+          by * none
+    state: exact
+  become: true
+
+- name: set permissions
+  ldap_attr:
+    dn: olcDatabase={2}hdb,cn=config
+    name: olcAccess
+    values:
+      - >-
+        {0}to attrs="userPassword,mail,sshPublicKey"
+        by dn="cn={{ ldap_admin_user }},{{ ldap_domain }}" write
+        by self write
+        by anonymous auth
+        by * none
+      - >-
+        {1}to dn.sub="{{ ldap_users_ou }},{{ ldap_domain }}"
+        by dn="cn={{ ldap_admin_user }},{{ ldap_domain }}" write
+        by anonymous read
+        by * read
+      - >-
+        {2}to dn.sub="{{ ldap_groups_ou }},{{ ldap_domain }}"
+        by dn="cn={{ ldap_admin_user }},{{ ldap_domain }}" write
+        by anonymous read
+        by * read
+      - >-
+        {3}to dn.sub="{{ ldap_domain }}"
+        by dn="cn={{ ldap_admin_user }},{{ ldap_domain }}" write
+        by anonymous read
+        by * read
+    state: exact
+  become: true
+
+
+- name: Crate top directory Entry
+  ldap_entry:
+    dn: "{{ ldap_domain }}"
+    objectClass:
+      - top
+      - dcObject
+      - organization
+    attributes:
+      o: Awesome domain
+    state: present
+    server_uri: ldap:///
+    bind_dn: "cn={{ldap_admin_user}},{{ ldap_domain }}"
+    bind_pw: "{{ vault_root_password }}"
+  become: true
+
+- name: create Users organizationalUnit
+  ldap_entry:
+    dn: "{{ ldap_users_ou }},{{ ldap_domain }}"
+    objectClass: organizationalUnit
+    state: present
+    server_uri: ldap:///
+    bind_dn: "cn={{ldap_admin_user}},{{ ldap_domain }}"
+    bind_pw: "{{ vault_root_password }}"
+  become: true
+
+- name: create Groups organizationalUnit
+  ldap_entry:
+    dn: "{{ ldap_groups_ou }},{{ ldap_domain }}"
+    objectClass: organizationalUnit
+    state: present
+    server_uri: ldap:///
+    bind_dn: "cn={{ldap_admin_user}},{{ ldap_domain }}"
+    bind_pw: "{{ vault_root_password }}"
+  become: true
+
+- name: create Admin Group
+  ldap_entry:
+    dn: "cn=Admin,{{ ldap_groups_ou }},{{ ldap_domain }}"
+    objectClass:
+      - top
+      - posixGroup
+    state: present
+    server_uri: ldap:///
+    bind_dn: "cn={{ldap_admin_user}},{{ ldap_domain }}"
+    bind_pw: "{{ vault_root_password }}"
+    attributes:
+      gidNumber: 501
+  become: true
+
+- name: allow ldap through firewall
+  firewalld:
+    service: ldap
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+
+- name: Configure PAM password auth
+  lineinfile:
+    path: /etc/pam.d/password-auth
+    line: "{{ item }}"
+    create: true
+    state: present
+  with_items:
+    - "auth        sufficient    pam_sss.so use_first_pass"
+    - "account     [default=bad success=ok user_unknown=ignore] pam_sss.so"
+    - "password    sufficient    pam_sss.so use_authtok"
+    - "session     optional      pam_sss.so"
+  become: true

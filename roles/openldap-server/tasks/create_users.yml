@@ -1,0 +1,28 @@
+---
+- name: create test1 user
+  ldap_entry:
+    dn: "cn=test1,{{ ldap_users_ou }},{{ ldap_domain }}"
+    objectClass:
+      - top
+      - account
+      - posixAccount
+      - shadowAccount
+    attributes:
+      cn: test1
+      uid: test1
+      uidNumber: 1001
+      gidNumber: 501
+      homeDirectory: /home/test1
+      loginShell: /bin/bash
+      gecos: test1 user
+      userPassword: "{crypt}1234"
+      shadowLastChange: 0
+      shadowMin: 0
+      shadowMax: 100
+      shadowWarning: 0
+      description: test1 user
+    state: present
+    server_uri: ldap:///
+    bind_dn: "cn={{ldap_admin_user}},{{ ldap_domain }}"
+    bind_pw: "{{ vault_root_password }}"
+  become: true
