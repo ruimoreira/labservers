@@ -32,4 +32,4 @@ Tests are implemented using molecule and testinfra, for more information see htt
  It also handles related tasks such as logging, log rotation seLinux etc
 
 # Openldap client
- Implements authentication using sssd and pam
+ Implements authentication using sssd and pam as authentication mechanisms for openldap enabled servers
