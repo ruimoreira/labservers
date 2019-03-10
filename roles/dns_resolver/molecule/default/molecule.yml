@@ -2,21 +2,28 @@
 dependency:
   name: galaxy
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+  name: docker
+  cap_add: [SYS_ADMIN]
 lint:
   name: yamllint
 platforms:
-  - name: instance
-    box: centos/7
+  - name: docker-centos
+    image: centos:7
+    privileged: true
+    volume: /sys/fs/cgroup
+    command: /sbin/init
 provisioner:
   name: ansible
+  log: true
   lint:
     name: ansible-lint
+  playbooks:
+    prepare: prepare-docker-in-docker.yml
+    converge: ../playbook.yml
 scenario:
   name: default
 verifier:
   name: testinfra
+  directory: ../tests  
   lint:
     name: flake8
