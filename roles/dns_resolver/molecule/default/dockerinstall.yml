@@ -25,3 +25,9 @@
     groups: docker
     append: true
   become: true
+
+- name: install python-netaddr
+  yum:
+    name: python-netaddr
+    state: present
+  become: true
