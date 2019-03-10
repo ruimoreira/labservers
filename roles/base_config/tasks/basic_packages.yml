@@ -9,6 +9,7 @@
       - firewalld
       - openssh-server
       - selinux-policy
+      - python-netaddr
     state: present
   become: true
 
