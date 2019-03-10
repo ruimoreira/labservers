@@ -5,4 +5,4 @@
   service:
     name: unbound
     state: started
-  become: true  
+  become: true

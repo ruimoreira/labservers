@@ -1,5 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    change_hostname: false
   roles:
     - role: dns_resolver

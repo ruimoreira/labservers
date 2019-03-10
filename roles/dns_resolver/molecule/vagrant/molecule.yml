@@ -22,7 +22,7 @@ provisioner:
     prepare: prepare-docker-in-docker.yml
     converge: ../playbook.yml
 scenario:
-  name: default
+  name: vagrant
 verifier:
   name: testinfra
   directory: ../tests
