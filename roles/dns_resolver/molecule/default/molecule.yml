@@ -7,7 +7,7 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: docker-centos
+  - name: docker-centos-dns_resolver
     image: centos:7
     privileged: true
     volume: /sys/fs/cgroup
