@@ -12,3 +12,5 @@ install:
 script:
 - cd roles/base_config
 - molecule test
+- cd roles/dns_resolver
+- molecule test
