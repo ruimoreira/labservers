@@ -8,7 +8,7 @@
       - ntp
       - firewalld
       - openssh-server
-      - SELinux-policy
+      - selinux-policy
     state: present
   become: true
 
